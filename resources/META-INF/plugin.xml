@@ -1,0 +1,36 @@
+<idea-plugin>
+  <id>com.yunusbedir.SoapConvertToDataClass</id>
+  <name>Soap Convert To Data Class</name>
+  <vendor email="yunusbedir@outlook.com.tr" url="">YunusBedir</vendor>
+
+  <description><![CDATA[Spoap Converter
+    ]]>>
+  </description>
+
+  <change-notes><![CDATA[Spoap Converter
+    ]]>
+  </change-notes>
+
+  <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="173.0"/>
+
+  <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+  <depends>com.intellij.modules.platform</depends>
+       on how to target different products -->
+  <depends>com.intellij.modules.java</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+  </extensions>
+
+
+  <actions>
+    <!-- Add your actions here -->
+
+    <group id="fileGroup" popup="true" text="Converter" description="Convert to data class">
+      <add-to-group group-id="NewGroup" anchor="last"/>
+      <action class="action.ConverterAction" id="converterAction"
+              text="Soap To Data Class"/>
+    </group>
+  </actions>
+</idea-plugin>
