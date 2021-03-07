@@ -12,11 +12,11 @@ object Converter {
     }
 
     private fun RootDC.convertToString(): String {
-        var result = ""
+        var result = "\n\nimport org.simpleframework.xml.*\n\n"
         try {
             //NAMESPACES
             if (this.nameSpaces!!.size > 0)
-                result += "\n@NamespaceList(" + this.nameSpaces!!.joinToString {
+                result += "@NamespaceList(" + this.nameSpaces!!.joinToString {
                     "\n\tNamespace(prefix = \"${it.prefix}\" , reference = \"${it.reference}\")"
                 } + "\n)\n"
         } catch (e: Exception) {
@@ -31,14 +31,15 @@ object Converter {
         }
         try {
             //ELEMENTS
-            this.elements!!.forEach {
-                if (it.type!!.contains("ArrayList")) {
+            this.elements?.forEachIndexed { index, elementDC ->
+
+                if (elementDC.type!!.contains("ArrayList")) {
                     result += "\t@field:ElementList(inline = true , required = false)\n"
-                    result += "\tpublic ${it.elementName}s : ${it.type}\n\n"
+                    result += "\tvar ${elementDC.elementName}s : ${elementDC.type}?,\n\n"
 
                 } else {
-                    result += "\t@field:Element(name = \"${it.tagName}\" , required = false)\n"
-                    result += "\tpublic ${it.elementName} : ${it.type}\n\n"
+                    result += "\t@field:Element(name = \"${elementDC.tagName}\" , required = false)\n"
+                    result += "\tvar ${elementDC.elementName} : ${elementDC.type}?,\n\n"
                 }
             }
             result += ")\n\n"
@@ -50,7 +51,7 @@ object Converter {
 
     fun String.convertToRootDC(rootName: String): ArrayList<RootDC> {
         val listDataClasses = ArrayList<RootDC>()
-        listDataClasses.add(RootDC("0.0", rootName, "", "",arrayListOf<ElementDC>(), arrayListOf()))
+        listDataClasses.add(RootDC("0.0", rootName, "", "", arrayListOf<ElementDC>(), arrayListOf()))
         var tabNumber = 0
         var classNumberInTabNumber: String
         var baseClassName: String
@@ -70,7 +71,7 @@ object Converter {
                     val elementName = getElementName(line)
                     val tagName = getTagName(line)
                     val elementType = "String"
-                    elements.add(ElementDC(elementName,tagName, elementType))
+                    elements.add(ElementDC(elementName, tagName, elementType))
                 } else if (line.contains("<")) {
                     var isContinue = false
                     val last = if (tabNumber != 0) {
@@ -105,9 +106,9 @@ object Converter {
                     }
                     if (isContinue.not()) {
                         try {
-                            last!!.elements?.add(ElementDC(elementName,tagName, elementType))
+                            last!!.elements?.add(ElementDC(elementName, tagName, elementType))
                         } catch (e: java.lang.Exception) {
-                            elements.add(ElementDC(elementName,tagName, elementType))
+                            elements.add(ElementDC(elementName, tagName, elementType))
                         }
                         classNumberInTabNumber = try {
                             listDataClasses.filter { dataClass ->
@@ -131,7 +132,7 @@ object Converter {
                         } catch (e: java.lang.Exception) {
 
                         }
-                        listDataClasses.add(RootDC("-1.0", null, null, null, null,null))
+                        listDataClasses.add(RootDC("-1.0", null, null, null, null, null))
                         baseClassName = elementName
                         elements = ArrayList()
                     }
@@ -175,6 +176,6 @@ object Converter {
     }
 
     private fun getElementName(line: String): String {
-        return getTagName(line).replace(":","").decapitalize()
+        return getTagName(line).replace(":", "").decapitalize()
     }
 }

@@ -5,7 +5,6 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
-import org.jetbrains.annotations.Nullable
 
 class FileChooserDialog private constructor(
     private val path: String?,
@@ -33,7 +32,7 @@ class FileChooserDialog private constructor(
 
     fun openFileChooser(project: Project) {
 
-        val toSelect: @Nullable VirtualFile? = if (path == null) {
+        val toSelect: VirtualFile? = if (path == null) {
             null
         } else {
             LocalFileSystem.getInstance().refreshAndFindFileByPath(path)
